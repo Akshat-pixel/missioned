@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result Backend</title>
+</head>
+<body>
+    <p>THE CODE IS - {{ n }}</p>
+    <p>{{ m }}</p>
+    <p>Pls confirm the above details and copy them below</p>
+
+    <label for="SrNum"></label><input type="number" id="srnum" placeholder="SrNum">
+    <label for="Description"></label><input type="text" id="description" placeholder="Description">
+    <label for="Code Generated"></label> <input type="number" id="codeid" placeholder="Code Generated" >
+    <button id="subBtn">SUBMIT</button>
+    <form action="/index.html" method="POST">
+        <button>next internship</button>
+    </form>
+
+
+
+
+<!-- --------------------------------------IMPORT AND CONFIGURATION-------------------------------- -->
+<script type="module" >
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.3.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.3.0/firebase-analytics.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCve6XpoGqkmCwly13dmXjq3weoR4MO1Iw",
+  authDomain: "missionedproject-fe492.firebaseapp.com",
+  projectId: "missionedproject-fe492",
+  storageBucket: "missionedproject-fe492.appspot.com",
+  messagingSenderId: "268072893139",
+  appId: "1:268072893139:web:0a0b646a0fa47e40dbb226",
+  measurementId: "G-7ZTEBKG6HG"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+import {
+    getFirestore, doc, getDoc, setDoc, collection, addDoc, updateDoc, deleteDoc
+}
+from "https://www.gstatic.com/firebasejs/9.3.0/firebase-firestore.js";
+
+
+const db = getFirestore();
+
+
+let srnum = document.getElementById("srnum");
+let description = document.getElementById("description");
+let codeid = document.getElementById("codeid");
+
+let subBtn = document.getElementById("subBtn");
+
+
+// ------------------------------------Getting first digit-----------------------------
+
+
+
+// -----------------------------ADDING DOCUMENT--------------------------------
+async function AddDocument_CustomID(){
+  var FirstDigit = 0;
+
+let num = codeid.value;
+let n = num.toString();
+var F = n.substring(0, 1);
+var FirstDigit = Number(F);
+console.log(FirstDigit);
+    if(FirstDigit == 1)
+    {
+      var codeidstr = String(codeid.value);
+      var srnumstr = String(srnum.value);
+      var id = codeidstr+srnumstr;
+      var ref = doc(db,"DataScienceInternship",id);
+
+
+      const docRef = await setDoc(
+          ref, {
+              descriptionOFInternship : description.value,
+              codeId : codeid.value
+          }
+      )
+      .then(()=>{
+          alert('data added succesfully');
+      })
+      .catch((error)=>{
+          alert("unsucessful operation, error="+error);
+      })
+    }
+    else
+    {
+      var codeidstr = String(codeid.value);
+      var srnumstr = String(srnum.value);
+      var id = codeidstr+srnumstr;
+      var ref = doc(db,"otherInternship",id);
+
+        const docRef = await setDoc(
+        ref, {
+          descriptionOFInternship : description.value,
+          codeId : codeid.value
+        }
+     )
+     .then(()=>{
+       alert('data added succesfully');
+     })
+     .catch((error)=>{
+       alert("unsucessful operation, error="+error);
+     })
+    }  
+}
+
+
+
+// ---------------------------------Assign Event to btn -------------------------------
+    
+subBtn.addEventListener("click", AddDocument_CustomID);    
+
+
+              
+      </script>
+</body>
+</html>

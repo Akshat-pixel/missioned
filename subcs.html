@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result Client Side</title>
+    <style>
+     .content{
+       background: #fff;
+       max-width: 960px;
+       margin: 30px auto;
+       padding:  20px 30px;
+       border-radius: 10px 120px 10px 10px;
+       box-shadow: 1px 3px 5px rgba(0,0,0,0.1)
+      }
+      body{
+       background: #eab0dc;
+       font-family: ubuntu;
+       }
+       ul{
+       list-style-type: none;
+       padding: 0;
+       }
+       li{
+       padding: 20px;
+       background: #f6f6f6;
+       font-size: 15px;
+       color: #555;
+       position: relative;
+       border-bottom: 1px solid #e6e6e6;
+       }
+       li span{
+       display: block;
+       }
+
+      li span:nth-child(2){
+      font-size: 16px;
+      margin-top: 6px;
+      color: #999;
+      }
+
+      li div{
+      position: absolute;
+      top: 0;
+      right: 0px;
+      background: rgba(255,255,255,0.6);
+      width: 40px;
+      text-align: center;
+      padding: 10px 0;
+      font-weight:  bold;
+      cursor:  pointer;
+    }
+    button{
+    border: 0;
+    background:#999;
+    border-radius: 10px;
+    padding: 13px;
+    width: 14%;
+    box-shadow: -1px 0px 1px rgba(0,0,0,0.1);
+    font-weight: bold;
+    font-family: ubuntu;
+    letter-spacing: 1px;
+    color: #fff;
+    margin: auto;
+    }
+    input{
+    border: 0;
+    background: #999;
+    width: 14%;
+    border-radius: 10px;
+    padding: 13px;
+    font-family: ubuntu;
+    letter-spacing: 1px;
+    font-weight: bold;
+    color: #fff;
+    margin: auto;
+    box-shadow: -1px 0px 1px rgba(0,0,0,0.1);
+    }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <ul id="internship-list"></ul>
+    <p>Your Code Id is {{a}}{{c}} . Please Enter this in the box below to get internship list</p>
+    <label for="Code Generated"></label> <input type="number" id="codeidcs" placeholder="Enter Code ID" >
+    <button id="subBtn">VIEW INTERNSHIPS</button>
+    <form action="/indexcs.html" method="POST">
+        <button>GO TO PREV PAGE</button>
+    </form>
+    </div>
+
+
+
+<!-- --------------------------------------IMPORT AND CONFIGURATION-------------------------------- -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.3.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.3.0/firebase-analytics.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyCve6XpoGqkmCwly13dmXjq3weoR4MO1Iw",
+  authDomain: "missionedproject-fe492.firebaseapp.com",
+  projectId: "missionedproject-fe492",
+  storageBucket: "missionedproject-fe492.appspot.com",
+  messagingSenderId: "268072893139",
+  appId: "1:268072893139:web:0a0b646a0fa47e40dbb226",
+  measurementId: "G-7ZTEBKG6HG"
+};
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+import {
+    getFirestore, doc, collection, addDoc, query, getDocs, orderBy, limit
+}
+from "https://www.gstatic.com/firebasejs/9.3.0/firebase-firestore.js";
+
+const db = getFirestore();
+let subBtn = document.getElementById("subBtn");
+let codeidcs = document.getElementById("codeidcs");
+// -----------------------------RETRIVING DOCUMENT--------------------------------
+async function GetDocument_CustomID()
+{ 
+const internshipList = document.querySelector('#internship-list');
+
+// create element & render cafe
+function renderList(doc){
+    let li = document.createElement('li');
+    let description = document.createElement('span');
+    let codeId = document.createElement('span');
+
+    li.setAttribute('data-id', doc.codeId);
+    codeId.textContent = doc.data().codeId;
+    description.textContent = doc.data().descriptionOFInternship;
+
+    li.appendChild(codeId);
+    li.appendChild(description);
+
+
+    internshipList.appendChild(li);
+
+}
+// getting data
+let addr = " ";
+if(codeidcs.value == 11 || codeidcs.value == 10)
+{
+    addr = "DataScienceInternship";
+}
+else
+{
+    addr = "otherInternship";
+}
+const q = query(collection(db, addr),orderBy("codeId","desc"), limit(10));
+const querySnapshot = await getDocs(q);
+querySnapshot.forEach((doc) => {
+    renderList(doc);
+});
+}
+
+// ---------------------------------Assign Event to btn -------------------------------
+subBtn.addEventListener("click", GetDocument_CustomID);              
+ </script>
+</body>
+</html>
